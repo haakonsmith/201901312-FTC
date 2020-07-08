@@ -1,0 +1,4 @@
+#Wed Jul 08 17:15:04 AEST 2020
+base.0=/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/build/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
