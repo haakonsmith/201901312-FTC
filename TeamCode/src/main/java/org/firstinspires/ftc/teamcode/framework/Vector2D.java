@@ -16,4 +16,8 @@ public class Vector2D {
         x = (float) _z; y = (float) _z;
     }
 
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ')';
+    }
 }

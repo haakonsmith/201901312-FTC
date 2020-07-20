@@ -27,17 +27,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.framework.Robot;
-import org.firstinspires.ftc.teamcode.framework.Vector2D;
+import org.firstinspires.ftc.teamcode.framework.TaskManager;
 
 
 /**
@@ -53,37 +51,49 @@ import org.firstinspires.ftc.teamcode.framework.Vector2D;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Movement Test", group="Linear Opmode")
+@TeleOp(name="AutoMovement", group="Auto Opmode")
 //@Disabled
-public class MovementTest extends LinearOpMode {
+public class AutoMovement extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     private Robot robot;
 
+    private TaskManager taskManager;
+
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+//        telemetry.addData("Status", "Initialized");
+//        telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        robot = new Robot(hardwareMap.get(DcMotor.class, "left_drive"),
-                          hardwareMap.get(DcMotor.class, "right_drive"),
+        robot = new Robot(hardwareMap.get(DcMotor.class, "left_motor"),
+                          hardwareMap.get(DcMotor.class, "right_motor"),
                           false);
+        taskManager = new TaskManager(robot);
+
+
+        // Submit robot tasks
+        taskManager.rotate90();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate30();
+
+        taskManager.updateTelemetryDisplay(telemetry);
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        // Submit robot tasks
-        robot.rotate90();
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            robot.update();
+            taskManager.update();
+            taskManager.updateTelemetryDisplay(telemetry);
+            telemetry.update();
         }
     }
 }

@@ -1,10 +1,10 @@
 [
     {
-        "merged": "/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/build/intermediates/res/merged/debug/xml_teamwebcamcalibrations.xml.flat",
-        "source": "/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/src/main/res/xml/teamwebcamcalibrations.xml"
+        "merged": "/Users/haakon/Development/Java/FTC/TeamCode/build/intermediates/res/merged/debug/raw_readme.md.flat",
+        "source": "/Users/haakon/Development/Java/FTC/TeamCode/src/main/res/raw/readme.md"
     },
     {
-        "merged": "/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/build/intermediates/res/merged/debug/raw_readme.md.flat",
-        "source": "/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/src/main/res/raw/readme.md"
+        "merged": "/Users/haakon/Development/Java/FTC/TeamCode/build/intermediates/res/merged/debug/xml_teamwebcamcalibrations.xml.flat",
+        "source": "/Users/haakon/Development/Java/FTC/TeamCode/src/main/res/xml/teamwebcamcalibrations.xml"
     }
 ]

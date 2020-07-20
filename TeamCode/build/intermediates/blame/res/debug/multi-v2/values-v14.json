@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/haakonsmith/Programming/Java/DMT-FTC/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v14/values-v14.xml",
+            "outputFile": "/Users/haakon/Development/Java/FTC/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v14/values-v14.xml",
             "map": [
                 {
-                    "source": "/Users/haakonsmith/.gradle/caches/transforms-2/files-2.1/36c0e6c528b86971785b095783b48b50/RobotCore-release/res/values-v14/values-v14.xml",
+                    "source": "/Users/haakon/.gradle/caches/transforms-2/files-2.1/36c0e6c528b86971785b095783b48b50/RobotCore-release/res/values-v14/values-v14.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
