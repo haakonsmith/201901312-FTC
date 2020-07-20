@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.framework;
 
 public class RobotTask {
     Vector2D relativePosition;
-    float rotation;
+    double rotation;
 
-    public RobotTask(Vector2D _relativePosition, float _rotation) {
+    public RobotTask(Vector2D _relativePosition, double _rotation) {
         rotation = _rotation;
         relativePosition = _relativePosition;
     }

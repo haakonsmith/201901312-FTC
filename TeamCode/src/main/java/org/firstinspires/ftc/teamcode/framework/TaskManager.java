@@ -24,11 +24,11 @@ public class TaskManager {
     }
 
     public void rotate90() {
-        submitTask(new RobotTask(new Vector2D(0), (float) Math.PI / 2));
+        submitTask(new RobotTask(new Vector2D(0),  Math.PI / 2));
     }
 
     public void rotate30() {
-        submitTask(new RobotTask(new Vector2D(0), (float) Math.PI / 6));
+        submitTask(new RobotTask(new Vector2D(0),  Math.PI / 6));
     }
 
     public void updateTelemetryDisplay(Telemetry telemetry) {
@@ -47,17 +47,18 @@ public class TaskManager {
     }
 
     void taskCompleted() {
-        if (robot.GetState() == Robot.State.Idle) {
+        if (robot.getState() == Robot.State.Idle) {
             currentTask = null;
         }
     }
 
     void taskExecutor(RobotTask task) {
         runtime.reset();
-        if (robot.GetState() == Robot.State.Idle) robot.Rotate(task.rotation, 1);
+        if (robot.getState() == Robot.State.Idle) robot.rotate(task.rotation, 1);
+        if (robot.getState() == Robot.State.RotationCorrection) robot.correctRotation();
 
         runtime.reset();
-        if (robot.GetState() == Robot.State.DoneRotating) robot.Move(task.relativePosition, 1);
+        if (robot.getState() == Robot.State.DoneRotating) robot.move(task.relativePosition, 1);
     }
 
     public void update() {

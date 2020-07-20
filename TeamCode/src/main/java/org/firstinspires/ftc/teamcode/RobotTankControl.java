@@ -33,9 +33,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.framework.HardwareImpl;
 import org.firstinspires.ftc.teamcode.framework.Robot;
 import org.firstinspires.ftc.teamcode.framework.Vector2D;
 
@@ -70,9 +72,11 @@ public class RobotTankControl extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        robot = new Robot(hardwareMap.get(DcMotor.class, "left_drive"),
-                          hardwareMap.get(DcMotor.class, "right_drive"),
-                          true);
+        robot = new Robot(new HardwareImpl(
+                hardwareMap.get(DcMotor.class, "left_motor"),
+                hardwareMap.get(DcMotor.class, "right_motor"),
+                hardwareMap.get(GyroSensor.class, "gyro_sensor"),
+                false));
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

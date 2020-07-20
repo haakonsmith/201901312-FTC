@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
 public class HardwareImpl {
-    DcMotor leftDrive;
-    DcMotor rightDrive;
+    private final DcMotor leftDrive;
+    private final DcMotor rightDrive;
 
-    public GyroSensor gyroscope;
+    private final GyroSensor gyroscope;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
@@ -17,9 +17,12 @@ public class HardwareImpl {
 
     public boolean manualMode;
     
-    public HardwareImpl(DcMotor _leftDrive, DcMotor _rightDrive, boolean _manualMode) {
+    public HardwareImpl(DcMotor _leftDrive, DcMotor _rightDrive, GyroSensor _gyroscope, boolean _manualMode) {
         leftDrive = _leftDrive;
         rightDrive = _rightDrive;
+        gyroscope = _gyroscope;
+
+        gyroscope.init();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -59,15 +62,22 @@ public class HardwareImpl {
         setMotorPower(task.wheelPowerValues);
     }
 
+    public boolean isBusy() {
+        return leftDrive.isBusy() | rightDrive.isBusy();
+    }
+
+    /**
+     * @return Returns heading from when last calibrated in radians
+     */
+    public double getHeading() {
+        return Math.toRadians(gyroscope.getHeading());
+    }
+
     /**
      * Starts calibrating...
      * Check state to see if finished calibrating.
      */
     public void calibrate() {
-
-    }
-
-    enum State {
-        Calibrating, Ready
+        gyroscope.calibrate();
     }
 }
