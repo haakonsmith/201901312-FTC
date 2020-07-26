@@ -89,6 +89,16 @@ public class AutoMovement extends LinearOpMode {
         taskManager.rotate90();
         taskManager.rotate90();
         taskManager.rotate90();
+        taskManager.rotate90();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate90();
+        taskManager.rotate90();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate90();
 
 
         taskManager.updateTelemetryDisplay(telemetry);

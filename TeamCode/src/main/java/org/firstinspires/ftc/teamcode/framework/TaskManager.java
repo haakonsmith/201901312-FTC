@@ -13,7 +13,7 @@ public class TaskManager {
     Queue<RobotTask> tasks = new LinkedList<RobotTask>();
     RobotTask currentTask = null;
 
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     public TaskManager(IRobot _robot) {
         robot = _robot;
@@ -24,11 +24,11 @@ public class TaskManager {
     }
 
     public void rotate90() {
-        submitTask(new RobotTask(new Vector2D(0),  Math.PI / 2));
+        submitTask(new RobotTask(new Vector2D(0), Math.PI / 2));
     }
 
     public void rotate30() {
-        submitTask(new RobotTask(new Vector2D(0),  Math.PI / 6));
+        submitTask(new RobotTask(new Vector2D(0), Math.PI / 6));
     }
 
     public void updateTelemetryDisplay(Telemetry telemetry) {
@@ -42,8 +42,6 @@ public class TaskManager {
         if (tasks.isEmpty()) {
             telemetry.addData("None", "");
         }
-
-
     }
 
     void taskCompleted() {
@@ -54,7 +52,7 @@ public class TaskManager {
 
     void taskExecutor(RobotTask task) {
         runtime.reset();
-        if (robot.getState() == Robot.State.Idle) robot.rotate(task.rotation, 1);
+        if (robot.getState() == Robot.State.Idle) robot.rotate(task.rotation, 10);
         if (robot.getState() == Robot.State.RotationCorrection) robot.correctRotation();
 
         runtime.reset();

@@ -2,6 +2,11 @@ package org.firstinspires.ftc.teamcode.framework;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+/**
+ * Robot interface used from TaskManager
+ * Do not interface with Hardware implementation,
+ * that way we can separate the logic for driving commands between the math and the actual high level input
+ */
 public interface IRobot {
     /**
      * Changes state to `Rotating`
@@ -29,12 +34,15 @@ public interface IRobot {
      */
     Robot.State getState();
 
+    /**
+     * @param telemetry
+     */
     void updateTelemetryDisplay(Telemetry telemetry);
 
     /**
      * Try's to sync the actual rotation and theoretical rotation. This won't propagate error, as the it will contain the error, although maybe it will. We'll see.
      */
-    public void correctRotation();
+    void correctRotation();
 
     enum State {
         Idle, Rotating, RotationCorrection, DoneRotating, Translating, DoneTranslating

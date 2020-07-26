@@ -78,6 +78,6 @@ public class HardwareImpl {
      * Check state to see if finished calibrating.
      */
     public void calibrate() {
-        gyroscope.calibrate();
+//        gyroscope.calibrate();
     }
 }
