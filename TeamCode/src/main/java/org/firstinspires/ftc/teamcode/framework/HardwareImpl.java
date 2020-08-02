@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.framework;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
+/**
+ * This is the only class that can issues commands to the robot
+ */
 public class HardwareImpl {
     private final DcMotor leftDrive;
     private final DcMotor rightDrive;

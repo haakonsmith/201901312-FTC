@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.framework.HardwareImpl;
 import org.firstinspires.ftc.teamcode.framework.Robot;
-import org.firstinspires.ftc.teamcode.framework.TaskManager;
+import org.firstinspires.ftc.teamcode.framework.RobotController;
 
 
 /**
@@ -62,7 +62,7 @@ public class AutoMovement extends LinearOpMode {
 
     private Robot robot;
 
-    private TaskManager taskManager;
+    private RobotController robotController;
 
     @Override
     public void runOpMode() {
@@ -77,31 +77,31 @@ public class AutoMovement extends LinearOpMode {
                 hardwareMap.get(DcMotor.class, "right_motor"),
                 hardwareMap.get(GyroSensor.class, "gyro_sensor"),
                 false));
-        taskManager = new TaskManager(robot);
+        robotController = new RobotController(robot);
 
 
         // Submit robot tasks
-        taskManager.rotate90();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate90();
-        taskManager.rotate90();
-        taskManager.rotate90();
-        taskManager.rotate90();
-        taskManager.rotate90();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate90();
-        taskManager.rotate90();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate30();
-        taskManager.rotate90();
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
 
 
-        taskManager.updateTelemetryDisplay(telemetry);
+        robotController.updateTelemetryDisplay(telemetry);
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -110,8 +110,8 @@ public class AutoMovement extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            taskManager.update();
-            taskManager.updateTelemetryDisplay(telemetry);
+            robotController.update();
+            robotController.updateTelemetryDisplay(telemetry);
             telemetry.update();
         }
     }

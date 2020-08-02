@@ -6,7 +6,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class TaskManager {
+/**
+ * Controls the robot.
+ */
+public class RobotController {
     public IRobot robot;
     public boolean done = false;
 
@@ -15,7 +18,7 @@ public class TaskManager {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
-    public TaskManager(IRobot _robot) {
+    public RobotController(IRobot _robot) {
         robot = _robot;
     }
 
@@ -44,12 +47,19 @@ public class TaskManager {
         }
     }
 
+    /**
+     * When the task is done, it nullifies the task.
+     */
     void taskCompleted() {
         if (robot.getState() == Robot.State.Idle) {
             currentTask = null;
         }
     }
 
+    /**
+     *
+     * @param task to execute
+     */
     void taskExecutor(RobotTask task) {
         runtime.reset();
         if (robot.getState() == Robot.State.Idle) robot.rotate(task.rotation, 10);
@@ -61,12 +71,14 @@ public class TaskManager {
 
     public void update() {
         taskCompleted();
-
+        // If there are no tasks, stop.
         if (tasks.isEmpty()) {
             done = true;
             return;
         }
-
+        // If there are still tasks
+        // If the tasks is equal to null (is completed)
+        // Removes bottom task is queue and stores in currentTask.
         if (currentTask == null) {
             currentTask = tasks.remove();
         }
