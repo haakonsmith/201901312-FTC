@@ -48,7 +48,7 @@ public class RobotController {
     }
 
     /**
-     * When the task is done, it nullifies the task.
+     * When the task is done, it places the task to the end of the line.
      */
     void taskCompleted() {
         if (robot.getState() == Robot.State.Idle) {
