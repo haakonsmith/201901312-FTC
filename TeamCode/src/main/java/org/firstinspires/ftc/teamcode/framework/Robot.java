@@ -4,7 +4,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 /**
- * 
+ * Current implementation for working robot
  */
 public class Robot implements IRobot {
     public static double WHEELDIAMETER = 17.9999999941f; // in millimetres
@@ -26,6 +26,8 @@ public class Robot implements IRobot {
     }
 
     /**
+     * Take rotation in radians to convert to wheel rotations using diameter and such
+     *
      * @param angle In radians
      * @return Number of rotations
      */
@@ -50,40 +52,7 @@ public class Robot implements IRobot {
         // + start to reset back to start of original range
     }
 
-    /**
-     * Shortest distance (angular) between two angles.
-     * It will be in range [0, Math.PI].
-     */
-    public static double distance(double alpha, double beta) {
-        double phi = Math.abs(beta - alpha) % (Math.PI * 2);       // This is either the distance or Math.PI * 2 - distance
-        double distance = phi > Math.PI ? (Math.PI * 2) - phi : phi;
-        int sign = (alpha - beta >= 0 && alpha - beta <= Math.PI) || (alpha - beta <= -Math.PI && alpha - beta >= -(Math.PI * 2)) ? 1 : -1;
-        return distance * sign;
-    }
 
-    private static double customMod(double a, double n) {
-        return (a % n + n) % n;
-    }
-
-    /**
-     * @param velocity
-     * @param omega
-     * @return
-     * @deprecated
-     */
-    Vector2D uniToDiff(double velocity, double omega) {
-        // velocity = translational velocity (m/s)
-        // omega = angular velocity (rad/s)
-
-        double R = WHEELDIAMETER / 2;
-        double L = CIRCUMSCRIBEDCIRCLEDIAMETER;
-
-        double v_l = ((2.0 * velocity) - (omega * L)) / (2.0 * R);
-        double v_r = ((2.0 * velocity) + (omega * L)) / (2.0 * R);
-
-        // Velocities for each side
-        return new Vector2D((float) v_l, (float) v_r);
-    }
 
     /**
      * @inheritDoc
@@ -114,10 +83,10 @@ public class Robot implements IRobot {
      * @inheritDoc
      */
     @Override
-    public void move(Vector2D distance, float power) {
-        Vector2D numRotations = new Vector2D(distance.x / (WHEELDIAMETER * Math.PI), distance.y / (WHEELDIAMETER * Math.PI));
+    public void move(double distance, float power) {
+        double numRotations = -(distance / (WHEELDIAMETER * Math.PI));
 
-        DriveData task = new DriveData(numRotations, new Vector2D(power));
+        DriveData task = new DriveData(new Vector2D(numRotations), new Vector2D(power));
 
         hardwareImpl.runTask(task);
 
@@ -178,11 +147,11 @@ public class Robot implements IRobot {
 
             actualRotation = normalise(actualRotation, 0, Math.PI * 2);
 
-            double correctionAngle = distance(actualRotation, rotation);
-            double si = Math.signum(correctionAngle);
+            double correctionAngle = IRobot.distanceBetweenAngles(actualRotation, rotation);
+//            double si = Math.signum(correctionAngle);
 
             if (Math.abs(correctionAngle) > 1 / (double) DIGITSOFCORRECTION) {
-                rotate((float) -Math.floor(correctionAngle * DIGITSOFCORRECTION) / DIGITSOFCORRECTION, 1f);
+                rotate((float) (Math.floor(correctionAngle * DIGITSOFCORRECTION) / DIGITSOFCORRECTION), 1f);
             } else {
                 break;
             }
@@ -190,5 +159,15 @@ public class Robot implements IRobot {
         }
 
         state = State.DoneRotating;
+    }
+
+    @Override
+    public Vector2D getPosition() {
+        return position;
+    }
+
+    @Override
+    public double getRotation() {
+        return rotation;
     }
 }

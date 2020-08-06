@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.framework.HardwareImpl;
 import org.firstinspires.ftc.teamcode.framework.Robot;
-import org.firstinspires.ftc.teamcode.framework.RobotController;
+import org.firstinspires.ftc.teamcode.framework.TaskManager;
 
 
 /**
@@ -61,7 +61,7 @@ public class Calibrate extends LinearOpMode {
 
     private Robot robot;
 
-    private RobotController robotController;
+    private TaskManager taskManager;
 
     @Override
     public void runOpMode() {
@@ -73,16 +73,16 @@ public class Calibrate extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         robot = new Robot(new HardwareImpl(hardwareMap.get(DcMotor.class, "left_motor"),
                 hardwareMap.get(DcMotor.class, "right_motor"), hardwareMap.get(GyroSensor.class, "gyro_sensor"), false));
-        robotController = new RobotController(robot);
+        taskManager = new TaskManager(robot);
 
 
         // Submit robot tasks
-        robotController.rotate90();
-        robotController.rotate30();
-        robotController.rotate30();
-        robotController.rotate30();
+        taskManager.rotate90();
+        taskManager.rotate30();
+        taskManager.rotate30();
+        taskManager.rotate30();
 
-        robotController.updateTelemetryDisplay(telemetry);
+        taskManager.updateTelemetryDisplay(telemetry);
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -91,8 +91,8 @@ public class Calibrate extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            robotController.update();
-            robotController.updateTelemetryDisplay(telemetry);
+            taskManager.update();
+            taskManager.updateTelemetryDisplay(telemetry);
             telemetry.update();
         }
     }

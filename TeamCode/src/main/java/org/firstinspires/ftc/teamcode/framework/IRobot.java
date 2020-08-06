@@ -22,7 +22,7 @@ public interface IRobot {
      * @param distance the distance in mm that each wheel must turn
      * @param power
      */
-    void move(Vector2D distance, float power);
+    void move(double distance, float power);
 
     /**
      * @return returns true if any motors on robot are moving
@@ -47,4 +47,19 @@ public interface IRobot {
     enum State {
         Idle, Rotating, RotationCorrection, DoneRotating, Translating, DoneTranslating
     }
+
+    public Vector2D getPosition();
+    public double getRotation();
+
+    /**
+     * Shortest distance (angular) between two angles.
+     * It will be in range [0, Math.PI].
+     */
+    public static double distanceBetweenAngles(double alpha, double beta) {
+        double phi = Math.abs(beta - alpha) % (Math.PI * 2);       // This is either the distance or Math.PI * 2 - distance
+        double distance = phi > Math.PI ? (Math.PI * 2) - phi : phi;
+        int sign = (alpha - beta >= 0 && alpha - beta <= Math.PI) || (alpha - beta <= -Math.PI && alpha - beta >= -(Math.PI * 2)) ? 1 : -1;
+        return distance * sign;
+    }
+
 }

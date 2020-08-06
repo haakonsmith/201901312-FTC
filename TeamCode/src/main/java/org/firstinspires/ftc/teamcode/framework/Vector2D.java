@@ -19,8 +19,22 @@ public class Vector2D {
         y = (float) _z;
     }
 
+    public Vector2D subtract(Vector2D other) {
+        return new Vector2D(other.x - x, other.y - y);
+    }
+
     @Override
     public String toString() {
         return "(" + x + ", " + y + ')';
+    }
+
+    public double distanceTo(Vector2D other) {
+        return Math.sqrt((other.x - x)*(other.x - x) + (other.y - y)*(other.y - y));
+    }
+
+    public double angleBetween(Vector2D other) {
+        Vector2D translatedVector = this.subtract(other);
+
+        return Math.atan2(translatedVector.x, translatedVector.y);
     }
 }
