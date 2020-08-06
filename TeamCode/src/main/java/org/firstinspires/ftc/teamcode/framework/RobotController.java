@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Controls the robot.
+ * Controls and manages the robot.
  */
 public class RobotController {
     public IRobot robot;
