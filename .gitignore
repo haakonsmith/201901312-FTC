@@ -12,7 +12,7 @@ Thumbs.db
 
 # Built application files
 *.apk
-*.aar
+# *.aar
 *.ap_
 *.aab
 
