@@ -14,9 +14,9 @@ public class Robot implements IRobot {
     public static double GYROFFSET = 0.00;
     private final HardwareImpl hardwareImpl;
     public State state = State.Idle;
-
+    
     public double rotation = 0; // This represents the theoretical rotation that the robot thinks it's at
-    public double physicalReferenceRotation = 0;// // This represents the physical reference rotation that the robot's gyroscope thinks it's at. Doesn't change. It's the zero rotation
+    public double physicalReferenceRotation;// // This represents the physical reference rotation that the robot's gyroscope thinks it's at. Doesn't change. It's the zero rotation
     public Vector2D position = new Vector2D(0); // This represents the theoretical position that the robot thinks it's at
 
 
@@ -58,7 +58,7 @@ public class Robot implements IRobot {
      * @inheritDoc
      */
     @Override
-    public void rotate(double angle, float power) {
+    public void rotate(double angle, float power, boolean advanceState) {
         rotation += angle;
         rotation = normalise(rotation, 0, Math.PI * 2);
 
@@ -70,7 +70,8 @@ public class Robot implements IRobot {
 
         hardwareImpl.runTask(task);
 
-        state = State.Rotating;
+        if (advanceState)
+            state = State.Rotating;
 
         try {
             Thread.sleep(1000);
@@ -116,10 +117,10 @@ public class Robot implements IRobot {
             state = State.RotationCorrection;
             return state;
         }
-        if (state == State.RotationCorrection && !isBusy()) {
-            state = State.DoneRotating;
-            return state;
-        }
+//        if (state == State.RotationCorrection && !isBusy()) {
+//            state = State.DoneRotating;
+//            return state;
+//        }
         if (state == State.Translating && !isBusy()) {
             state = State.Idle;
         }
@@ -147,11 +148,18 @@ public class Robot implements IRobot {
 
             actualRotation = normalise(actualRotation, 0, Math.PI * 2);
 
-            double correctionAngle = IRobot.distanceBetweenAngles(actualRotation, rotation);
+            double correctionAngle = AdvMath.distanceBetweenAngles(actualRotation, rotation);
 //            double si = Math.signum(correctionAngle);
 
-            if (Math.abs(correctionAngle) > 1 / (double) DIGITSOFCORRECTION) {
-                rotate((float) (Math.floor(correctionAngle * DIGITSOFCORRECTION) / DIGITSOFCORRECTION), 1f);
+            if (Math.abs(correctionAngle) > (1 / (double) DIGITSOFCORRECTION)) {
+                while (isBusy()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                rotate((float) (AdvMath.trunc(correctionAngle * DIGITSOFCORRECTION) / DIGITSOFCORRECTION), 1f, false);
             } else {
                 break;
             }

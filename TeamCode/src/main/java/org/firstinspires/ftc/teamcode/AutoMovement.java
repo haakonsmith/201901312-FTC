@@ -32,13 +32,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.framework.HardwareImpl;
 import org.firstinspires.ftc.teamcode.framework.Robot;
-import org.firstinspires.ftc.teamcode.framework.TaskManager;
-import org.firstinspires.ftc.teamcode.framework.Vector2D;
+import org.firstinspires.ftc.teamcode.framework.RobotController;
 
 
 /**
@@ -63,7 +61,7 @@ public class AutoMovement extends LinearOpMode {
 
     private Robot robot;
 
-    private TaskManager taskManager;
+    private RobotController robotController;
 
     @Override
     public void runOpMode() {
@@ -74,36 +72,33 @@ public class AutoMovement extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         robot = new Robot(new HardwareImpl(
-                hardwareMap.get(DcMotor.class, "left_motor"),
-                hardwareMap.get(DcMotor.class, "right_motor"),
-                hardwareMap.get(GyroSensor.class, "gyro_sensor"),
+                hardwareMap.get(DcMotor.class, "left_back_motor"),
+                hardwareMap.get(DcMotor.class, "right_back_motor"),
+//                hardwareMap.get(GyroSensor.class, "gyro_sensor"),
                 false));
-        taskManager = new TaskManager(robot);
+        robotController = new RobotController(robot);
 
 
         // Submit robot tasks
-        taskManager.goTo(new Vector2D(20,20));
-//        taskManager.rotate90();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate90();
-//        taskManager.rotate90();
-//        taskManager.rotate90();
-//        taskManager.rotate90();
-//        taskManager.rotate90();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate90();
-//        taskManager.rotate90();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate30();
-//        taskManager.rotate90();
+//        robotController.goTo(new Vector2D(20,20));
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
+        robotController.rotate90();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate30();
+        robotController.rotate90();
 
 
-        taskManager.updateTelemetryDisplay(telemetry);
+        robotController.updateTelemetryDisplay(telemetry);
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -112,8 +107,8 @@ public class AutoMovement extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            taskManager.update();
-            taskManager.updateTelemetryDisplay(telemetry);
+            robotController.update();
+            robotController.updateTelemetryDisplay(telemetry);
             telemetry.update();
         }
     }

@@ -31,14 +31,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.framework.HardwareImpl;
-import org.firstinspires.ftc.teamcode.framework.Robot;
 import org.firstinspires.ftc.teamcode.framework.Vector2D;
 
 
@@ -62,22 +59,21 @@ public class RobotTankControl extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Robot robot;
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //    private Robot robot;
+        HardwareImpl hardware = new HardwareImpl(
+                hardwareMap.get(DcMotor.class, "left_back_motor"),
+                hardwareMap.get(DcMotor.class, "right_back_motor"), true);
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        robot = new Robot(new HardwareImpl(
-                hardwareMap.get(DcMotor.class, "left_motor"),
-                hardwareMap.get(DcMotor.class, "right_motor"),
-                hardwareMap.get(GyroSensor.class, "gyro_sensor"),
-                false));
 
+//        robot = new Robot(hardware);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -94,12 +90,14 @@ public class RobotTankControl extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
+            double drive = gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            leftPower    = Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
+            rightPower   = Range.clip(gamepad1.right_stick_y, -1.0, 1.0) ;
 
             Vector2D motorPower = new Vector2D(leftPower, rightPower);
+
+            hardware.setMotorPower(motorPower);
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -110,7 +108,10 @@ public class RobotTankControl extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Sticks", "left stick: (%.2f), right stick (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
+            telemetry.addData("Vars", "drive: (%.2f), turn (%.2f)", drive, turn);
+//            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+//            telemetry.addData("State:", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
         }
     }

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.framework;
 
+/**
+ * Contains data required for the robots movement.
+ */
 public class RobotTask {
     double relativeDistance;
     double rotation;

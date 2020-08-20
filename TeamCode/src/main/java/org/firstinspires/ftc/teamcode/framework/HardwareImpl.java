@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.framework;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 
+/**
+ * This is the only class that can issues commands to the robot
+ */
 public class HardwareImpl {
-    private final DcMotor leftDrive;
-    private final DcMotor rightDrive;
+    public final DcMotor leftBackDrive;
+    public final DcMotor rightBackDrive;
+//    public final DcMotor leftFrontDrive;
+//    public final DcMotor rightFrontDrive;
 
-    private final GyroSensor gyroscope;
+//    private final GyroSensor gyroscope;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
@@ -17,60 +21,67 @@ public class HardwareImpl {
 
     public boolean manualMode;
     
-    public HardwareImpl(DcMotor _leftDrive, DcMotor _rightDrive, GyroSensor _gyroscope, boolean _manualMode) {
-        leftDrive = _leftDrive;
-        rightDrive = _rightDrive;
-        gyroscope = _gyroscope;
+    public HardwareImpl(DcMotor leftBackDrive, DcMotor rightBackDrive, boolean _manualMode) {
+        this.leftBackDrive = leftBackDrive;
+        this.rightBackDrive = rightBackDrive;
+//        this.leftFrontDrive = leftFrontDrive;
+//        this.rightFrontDrive = rightFrontDrive;
 
-        gyroscope.init();
+//        gyroscope = _gyroscope;
+
+//        gyroscope.init();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+//        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+//        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        if (manualMode) {
-            return;
+        if (!manualMode) {
+//            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        else {
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         
     }
 
     private void setMotorPosition(Vector2D position) {
-        leftDrive.setTargetPosition((int) (Math.floor(position.x * TICKS_PER_ROTATION)));
-        rightDrive.setTargetPosition((int) (Math.floor(position.y * TICKS_PER_ROTATION)));
+        leftBackDrive.setTargetPosition((int) (AdvMath.trunc(position.x * TICKS_PER_ROTATION)));
+        rightBackDrive.setTargetPosition((int) (AdvMath.trunc(position.y * TICKS_PER_ROTATION)));
 
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    private void setMotorPower(Vector2D power) {
-        leftDrive.setPower(power.x);
-        rightDrive.setPower(power.y);
+    public void setMotorPower(Vector2D power) {
+        leftBackDrive.setPower(power.x);
+        rightBackDrive.setPower(power.y);
     }
 
     public void runTask(DriveData task) {
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        setMotorPosition(task.wheelEncoderValues);
-        setMotorPower(task.wheelPowerValues);
+        if (!manualMode) {
+//            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//            setMotorPosition(task.wheelEncoderValues);
+            setMotorPower(task.wheelPowerValues);
+        }
     }
 
     public boolean isBusy() {
-        return leftDrive.isBusy() | rightDrive.isBusy();
+        return leftBackDrive.isBusy() | rightBackDrive.isBusy();
     }
 
     /**
      * @return Returns heading from when last calibrated in radians
      */
     public double getHeading() {
-        return Math.toRadians(gyroscope.getHeading());
+        return Math.toRadians(0);
     }
 
     /**
