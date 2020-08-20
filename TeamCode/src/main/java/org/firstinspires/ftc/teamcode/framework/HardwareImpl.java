@@ -21,27 +21,25 @@ public class HardwareImpl {
 
     public boolean manualMode;
     
-    public HardwareImpl(DcMotor leftBackDrive, DcMotor rightBackDrive, boolean _manualMode) {
+    public HardwareImpl(DcMotor leftBackDrive, DcMotor rightBackDrive, boolean manualMode) {
         this.leftBackDrive = leftBackDrive;
         this.rightBackDrive = rightBackDrive;
-//        this.leftFrontDrive = leftFrontDrive;
-//        this.rightFrontDrive = rightFrontDrive;
+        this.manualMode = manualMode;
 
 //        gyroscope = _gyroscope;
-
 //        gyroscope.init();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-//        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-//        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         if (!manualMode) {
-//            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         else {
             leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,10 +63,10 @@ public class HardwareImpl {
 
     public void runTask(DriveData task) {
         if (!manualMode) {
-//            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//            setMotorPosition(task.wheelEncoderValues);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            setMotorPosition(task.wheelEncoderValues);
             setMotorPower(task.wheelPowerValues);
         }
     }
