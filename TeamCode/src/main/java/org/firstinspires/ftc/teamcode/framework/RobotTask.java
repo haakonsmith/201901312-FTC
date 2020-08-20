@@ -1,16 +1,19 @@
 package org.firstinspires.ftc.teamcode.framework;
 
+/**
+ * Contains data required for the robots movement.
+ */
 public class RobotTask {
-    Vector2D relativePosition;
-    float rotation;
+    double relativeDistance;
+    double rotation;
 
-    public RobotTask(Vector2D _relativePosition, float _rotation) {
+    public RobotTask(double _relativePosition, double _rotation) {
         rotation = _rotation;
-        relativePosition = _relativePosition;
+        relativeDistance = _relativePosition;
     }
 
     @Override
     public String toString() {
-        return "{" + relativePosition.toString() + ", " + rotation + '}';
+        return "{" + relativeDistance + ", " + rotation + '}';
     }
 }

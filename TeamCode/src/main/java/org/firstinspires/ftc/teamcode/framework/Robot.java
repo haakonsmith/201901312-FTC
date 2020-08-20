@@ -1,42 +1,67 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
+/**
+ * Current implementation for working robot
+ */
 public class Robot implements IRobot {
-    public static float wheelDiameter = 17.9999999941f; // in millimetres
-    public static float circumscribedCircleDiameter = 72f; // in millimetres
+    public static double WHEELDIAMETER = 17.9999999941f; // in millimetres
+    public static double CIRCUMSCRIBEDCIRCLEDIAMETER = 72f; // in millimetres
+    public static int CORRECTIONS = 2;
+    public static int DIGITSOFCORRECTION = 1000;
+    public static double GYROFFSET = 0.00;
     private final HardwareImpl hardwareImpl;
     public State state = State.Idle;
+    
+    public double rotation = 0; // This represents the theoretical rotation that the robot thinks it's at
+    public double physicalReferenceRotation;// // This represents the physical reference rotation that the robot's gyroscope thinks it's at. Doesn't change. It's the zero rotation
+    public Vector2D position = new Vector2D(0); // This represents the theoretical position that the robot thinks it's at
 
 
-    public Robot(DcMotor _leftDrive, DcMotor _rightDrive, boolean _manualMode) {
-        hardwareImpl = new HardwareImpl(_leftDrive, _rightDrive, _manualMode);
+    public Robot(HardwareImpl _hardwareImpl) {
+        hardwareImpl = _hardwareImpl;
+        physicalReferenceRotation = hardwareImpl.getHeading() + GYROFFSET;
     }
 
     /**
-     * @param velocity
-     * @param omega
-     * @return
-     * @deprecated
+     * Take rotation in radians to convert to wheel rotations using diameter and such
+     *
+     * @param angle In radians
+     * @return Number of rotations
      */
-    Vector2D uniToDiff(float velocity, float omega) {
-        // velocity = translational velocity (m/s)
-        // omega = angular velocity (rad/s)
-
-        float R = wheelDiameter / 2;
-        float L = circumscribedCircleDiameter;
-
-        double v_l = ((2.0 * velocity) - (omega * L)) / (2.0 * R);
-        double v_r = ((2.0 * velocity) + (omega * L)) / (2.0 * R);
-
-        // Velocities for each side
-        return new Vector2D((float) v_l, (float) v_r);
+    private static double convertAngleToWheelRotations(double angle) {
+        return (angle * CIRCUMSCRIBEDCIRCLEDIAMETER / (WHEELDIAMETER * 2 * Math.PI));
     }
 
+    /**
+     * Normalizes any number to an arbitrary range
+     * by assuming the range wraps around when going below min or above max
+     *
+     * @param value The actual value
+     * @param start Min
+     * @param end   Max
+     * @return Returns normalised angle
+     */
+    public static double normalise(double value, double start, double end) {
+        double width = end - start;   //
+        double offsetValue = value - start;   // value relative to 0
+
+        return (offsetValue - (Math.floor(offsetValue / width) * width)) + start;
+        // + start to reset back to start of original range
+    }
+
+
+
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void Rotate(float angle, float power) {
+    public void rotate(double angle, float power, boolean advanceState) {
+        rotation += angle;
+        rotation = normalise(rotation, 0, Math.PI * 2);
+
         // Get rotation for both side motors
         double wheelRotations = convertAngleToWheelRotations(angle);
         Vector2D rotation = new Vector2D(wheelRotations, -wheelRotations);
@@ -45,7 +70,8 @@ public class Robot implements IRobot {
 
         hardwareImpl.runTask(task);
 
-        state = State.Rotating;
+        if (advanceState)
+            state = State.Rotating;
 
         try {
             Thread.sleep(1000);
@@ -55,20 +81,13 @@ public class Robot implements IRobot {
     }
 
     /**
-     * @param angle In radians
-     * @return Number of rotations
+     * @inheritDoc
      */
-    private double convertAngleToWheelRotations(float angle) {
-        return (angle * circumscribedCircleDiameter / (wheelDiameter * 2 * Math.PI));
-    }
-
     @Override
-    public void Move(Vector2D distance, float power) {
+    public void move(double distance, float power) {
+        double numRotations = -(distance / (WHEELDIAMETER * Math.PI));
 
-
-        Vector2D numRotations = new Vector2D(distance.x / (wheelDiameter * Math.PI), distance.y / (wheelDiameter * Math.PI));
-
-        DriveData task = new DriveData(numRotations, new Vector2D(power));
+        DriveData task = new DriveData(new Vector2D(numRotations), new Vector2D(power));
 
         hardwareImpl.runTask(task);
 
@@ -81,25 +100,82 @@ public class Robot implements IRobot {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public boolean IsBusy() {
-        return hardwareImpl.leftDrive.isBusy() | hardwareImpl.rightDrive.isBusy();
+    public boolean isBusy() {
+        return hardwareImpl.isBusy();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public State GetState() {
-        if (state == State.Rotating && !IsBusy()) {
-            state = State.DoneRotating;
+    public State getState() {
+        if (state == State.Rotating && !isBusy()) {
+            state = State.RotationCorrection;
+            return state;
         }
-        if (state == State.Translating && !IsBusy()) {
+//        if (state == State.RotationCorrection && !isBusy()) {
+//            state = State.DoneRotating;
+//            return state;
+//        }
+        if (state == State.Translating && !isBusy()) {
             state = State.Idle;
         }
         return state;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void updateTelemetryDisplay(Telemetry telemetry) {
-        telemetry.addData("Wheel diameter: ", "%.3f", wheelDiameter);
-        telemetry.addData("| Diameter of circumscribed circle: ", "%.3f", circumscribedCircleDiameter);
+        telemetry.addData("Wheel diameter: ", "%.3f", WHEELDIAMETER);
+        telemetry.addData("D of circumscribed circle: ", "%.3f", CIRCUMSCRIBEDCIRCLEDIAMETER);
+        telemetry.addData("Rotation: ", "%.3f", Math.toDegrees(rotation));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void correctRotation() {
+
+        for (int i = 0; i <= CORRECTIONS; i++) {
+            // corrected actual rotation
+            double actualRotation = (hardwareImpl.getHeading() - physicalReferenceRotation);
+
+            actualRotation = normalise(actualRotation, 0, Math.PI * 2);
+
+            double correctionAngle = AdvMath.distanceBetweenAngles(actualRotation, rotation);
+//            double si = Math.signum(correctionAngle);
+
+            if (Math.abs(correctionAngle) > (1 / (double) DIGITSOFCORRECTION)) {
+                while (isBusy()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                rotate((float) (AdvMath.trunc(correctionAngle * DIGITSOFCORRECTION) / DIGITSOFCORRECTION), 1f, false);
+            } else {
+                break;
+            }
+
+        }
+
+        state = State.DoneRotating;
+    }
+
+    @Override
+    public Vector2D getPosition() {
+        return position;
+    }
+
+    @Override
+    public double getRotation() {
+        return rotation;
     }
 }
