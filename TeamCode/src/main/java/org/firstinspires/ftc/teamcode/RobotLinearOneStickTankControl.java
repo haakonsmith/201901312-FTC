@@ -44,7 +44,7 @@ public class RobotLinearOneStickTankControl extends LinearOpMode {
             double leftPower    = drive + turn;
             double rightPower   = drive - turn;
 
-            Vector2D motorPower = new Vector2D(leftPower, rightPower);
+            Vector2D motorPower = new Vector2D(leftPower, -rightPower);
 
             hardware.setMotorPower(motorPower);
 

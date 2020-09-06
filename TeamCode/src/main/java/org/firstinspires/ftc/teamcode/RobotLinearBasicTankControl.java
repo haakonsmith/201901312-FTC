@@ -45,7 +45,7 @@ public class RobotLinearBasicTankControl extends LinearOpMode {
             leftPower    = Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
             rightPower   = Range.clip(gamepad1.right_stick_y, -1.0, 1.0) ;
 
-            Vector2D motorPower = new Vector2D(leftPower, rightPower);
+            Vector2D motorPower = new Vector2D(leftPower, -rightPower);
 
             hardware.setMotorPower(motorPower);
 
